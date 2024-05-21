@@ -1,6 +1,8 @@
 import json
 import boto3
 
+from utils.createdDate import createdDate
+
 def v1_vision(event, context):
     try:
         # Informações da solicitação
@@ -25,10 +27,8 @@ def v1_vision(event, context):
         # Montando a URL da imagem
         url = f'https://{bucket}.s3.amazonaws.com/{imageName}'
 
-        # Pegando a data de criação da imagem
-        s3 = boto3.client('s3')
-        dados = s3.head_object(Bucket=bucket, Key=imageName)
-        created_image = dados['LastModified'].strftime("%d-%m-%Y %H:%M:%S")
+        # Get the created date of the image
+        created_image = createdDate(bucket, imageName)
 
         # Inicializando o corpo da resposta
         body = {

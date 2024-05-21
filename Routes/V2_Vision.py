@@ -1,6 +1,8 @@
 import json
 import boto3
 
+from utils.labelFilter import labelFilter
+
 def v2_vision(event, context):
     try:
         # Informações da solicitação
@@ -33,21 +35,8 @@ def v2_vision(event, context):
             for label in response_animal['Labels']
         ]
 
-        # Filtrando para excluir algumas labels genéricas
-        exclude_list = ["Canine", "Mammal", "Puppy", "Kitten", "Rodent"]
-
-        for label in labels:
-            if len(labels) <= 4:
-                break
-
-            if label['Name'] in exclude_list:
-                labels.remove(label)
-        
-        labels = labels[:4]
-
-        # Log de resposta do Rekognition
-        log = json.dumps(response_animal)
-        print(log)
+        # Filtering Labels
+        labels = labelFilter(labels)
 
         # Verificar se há PET na imagem
         if len(labels) == 0: 
