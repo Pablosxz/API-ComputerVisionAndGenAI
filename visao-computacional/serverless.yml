@@ -1,0 +1,48 @@
+service: vision
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: python3.9
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+        - rekognition:*
+        - bedrock:*
+      Resource: "*"
+  httpApi:
+    cors: true
+
+functions:
+  health:
+    handler: handler.health
+    events:
+      - httpApi:
+          path: /
+          method: get
+  v1Description:
+    handler: handler.v1_description
+    events:
+      - httpApi:
+          path: /v1
+          method: get
+  v2Description:
+    handler: handler.v2_description
+    events:
+      - httpApi:
+          path: /v2
+          method: get
+  v1VisionDescription:
+    handler: handler.v1_vision
+    events:
+      - httpApi:
+          path: /v1/vision
+          method: post
+  v2VisionDescription:
+    handler: handler.v2_vision
+    events:
+      - httpApi:
+          path: /v2/vision
+          method: post
+    timeout: 20
