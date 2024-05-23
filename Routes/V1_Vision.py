@@ -3,7 +3,7 @@ import boto3
 
 from utils.createdDate import createdDate
 
-def v1_vision(event, context):
+def v1Vision(event, context):
     try:
         # Informações da solicitação
         request_body = json.loads(event.get('body'))

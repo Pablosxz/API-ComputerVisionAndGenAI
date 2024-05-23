@@ -3,7 +3,7 @@ import boto3
 
 from utils.labelFilter import labelFilter
 
-def v2_vision(event, context):
+def v2Vision(event, context):
     try:
         # Informações da solicitação
         request_body = json.loads(event.get('body'))
