@@ -1,6 +1,7 @@
 import json
 import boto3
 
+# importing functions from the utils folder
 from utils.createdDate import createdDate
 from utils.verifyFaces import verifyFaces
 

@@ -1,6 +1,7 @@
 import json
 import boto3
 
+# importing functions from the utils folder
 from utils.labelFilter import labelFilter
 
 def v2Vision(event, context):
