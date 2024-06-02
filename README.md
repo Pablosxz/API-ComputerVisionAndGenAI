@@ -1,38 +1,33 @@
-#  Detector de Emoções e Gerador de Dicas para Tutores de Pets
+# Pet Emotion Detector and Tips Generator for Pet Owners
 
-Avaliação da oitava sprint do programa de bolsas Compass UOL para formação em machine learning para AWS.
 
-***
+## 📃 Table of Contents
 
-## 📃 Índice
+- [Project Scope](#-project-scope)
+- [Tools and Technologies Used](#-tools-and-technologies-used)
+- [Application Routes](#-application-routes)
+- [How to Use the System](#-how-to-use-the-system)
+- [Development](#-development)
+- [License](#-license)
 
-- [Escopo do Projeto](#-escopo-do-projeto)
-- [Ferramentas e tecnologias utilizadas](#-ferramentas-e-tecnologias-utilizadas)
-- [Rotas da Aplicação](#-rotas-da-aplicação)
-- [Como utilizar o sistema](#-como-utilizar-o-sistema)
-- [Desenvolvimento](#-desenvolvimento)
-- [Organização das Pastas](#-organização-das-pastas)
-- [Dificuldades Conhecidas](#-Dificuldades-Conhecidas)
-- [Desenvolvedores](#-desenvolvedores)
 
-***
 
-## 🔭 Escopo do Projeto
+## 🔭 Project Scope
 
-A API foi desenvolvida para visando realizar duas funcionalidades distintas:
+The API was developed to provide two distinct functionalities:
 
-- Detectar as emoções nos rostos presentes nas imagens enviadas como parâmetros.
-- Detectar a raça de animais presentes nas fotos enviadas, além de gerar dicas buscando facilitar a criação de seus pets, sejam elas dicas de saúde ou de comportamentos que podem ser apresentados pelo seu bichinho.
+- Detect emotions in the faces present in the images sent as parameters.
+- Detect the breed of animals in the photos sent, and generate tips to facilitate the care of your pets, whether they are health tips or behaviors that your pet may exhibit.
 
-***
 
-## 🛠️ Ferramentas e tecnologias utilizadas
+
+## 🛠️ Tools and Technologies Used
 
 <div style="display: inline_block">
   <table border="1">
     <tr>
-        <th>Tecnologia</th>
-        <th>Versão</th>
+        <th>Technology</th>
+        <th>Version</th>
     </tr>
     <tr>
         <td> <a href=""><img align="left" alt="AWS CLI" height="20" width="20" style="margin-right: 10px" src="https://icon.icepanel.io/AWS/svg/Developer-Tools/Command-Line-Interface.svg"></a>AWS CLI</td>
@@ -70,20 +65,18 @@ A API foi desenvolvida para visando realizar duas funcionalidades distintas:
         <td> <a href=""><img align="left" alt="Python" height="20" width="20" style="margin-right: 10px" src="https://icon.icepanel.io/Technology/svg/Python.svg"></a> Python</td>
         <td>V. 3.9</td>
     </tr>
-    </tr>
   </table>
 </div>
 
-***
 
-## 📍 Rotas da Aplicação
+## 📍 Application Routes
 
-1. O status code para sucesso das requisições será `200`
-2. As imagens passadas nos métodos POST devem estar nos formatos `.jpg` ou `.png`, estando armazenada em um bucket S3.
+1. The success status code for requests will be `200`.
+2. The images passed in the POST methods must be in `.jpg` or `.png` format, stored in an S3 bucket.
 
-***
 
-### Rota 1 → GET `/` 
+
+### Route 1 → GET `/` 
 
 ```json 
    { 
@@ -94,25 +87,26 @@ A API foi desenvolvida para visando realizar duas funcionalidades distintas:
    } 
 ```
   
-### Rota 2 → GET `/v1`
+### Route 2 → GET `/v1`
 
 ```json 
 { 
-   "message": "VISION api version 1." 
+   "message": "VISION API version 1." 
 } 
 ```
   
-### Rota 3 → GET `/v2`
+### Route 3 → GET `/v2`
   
 ```json 
 { 
-   "message": "VISION api version 2." 
-} 
+   "message": "VISION API version 2." 
+}
 ```
 ***
+
 ### POST
 
-Ambas as rotas POST recebem uma requisição no formato:
+Both POST routes receive a request in the format:
 ```json  
 {  
    "bucket": "myphotos",  
@@ -120,9 +114,9 @@ Ambas as rotas POST recebem uma requisição no formato:
 }  
 ```
 
-### Rota 4 -> POST `/v1/vision`
+### Route 4 -> POST `/v1/vision`
 
-- Retorno esperado:
+- Expected return:
 
 ```json
 {
@@ -143,9 +137,9 @@ Ambas as rotas POST recebem uma requisição no formato:
 }
 ```
 
-### Rota 5 -> POST `/v2/vision`
+### Route 5 -> POST `/v2/vision`
 
-- Retorno esperado:
+- Expected return:
 
 ```json  
 {
@@ -169,81 +163,52 @@ Ambas as rotas POST recebem uma requisição no formato:
             "Name": "Pug"
         }
     ],
-    "Dicas": "Dicas sobre Pugs:  Nível de Energia e Necessidades de Exercícios: Pugs são de nível médio de energia, necessitando de 30 minutos de exercício por dia.  Temperamento e Comportamento: Cariñosos, alegres, inteligentes e dependentes de pessoas.  Cuidados e Necessidades: Pelos curtos e finos que precisam de cuidados especializados, como lavagem regular e penteado. A alimentação deve ser balanceada, comercial ou homemade, ajustando a quantidade conforme o peso do cão.  Problemas de Saúde Comuns: Arritmia cardíaca, hipoacusia, luxação da coluna e problemas respiratórios."
+    "Dicas": "Tips about Pugs:  Energy Level and Exercise Needs: Pugs have a medium energy level, requiring 30 minutes of exercise per day.  Temperament and Behavior: Affectionate, cheerful, intelligent, and dependent on people.  Care and Needs: Short and fine hair that needs specialized care, such as regular washing and brushing. The diet should be balanced, whether commercial or homemade, adjusting the amount according to the dog's weight.  Common Health Problems: Cardiac arrhythmia, hearing loss, spinal dislocation, and respiratory problems."
 }
 ```
 
 ***
 
-## 🚀 Como executar o projeto
+## 🚀 How to Run the Project
 
-É possível utilizar o sistema de duas formas distintas, por meio de sua implementação na plataforma da AWS, localmente, ou em ambiente de produção utilizando o link disponibilizado.
+You can use the system by implementing it on the AWS platform, locally.
 
-### Utilizando em ambiente de produção
 
-1. Acesse o endpoint da API por meio do link:
+### Running Locally
 
-```
-  https://oxz3hdtxx1.execute-api.us-east-1.amazonaws.com
-```
-
-2. Faça requisições às rotas seguindo o modelo e teste as respostas fornecidas.
-
-### Executando localmente
-
-1. Clone o repositório do GitHub em sua máquina local:
+1. Clone the GitHub repository to your local machine:
 
 ```
-  git clone -b grupo-6 https://github.com/Compass-pb-aws-2024-IFSUL-UFERSA/sprint-8-pb-aws-ifsul-ufersa
+  git clone ...
 ```
 
-2. Instale o serverless
+2. Install serverless
 
 ```
   npm install -g serverless
 ```
 
-3. Navegue até pasta em que se encontra a aplicação e execute o seguinte comando para iniciá-la:
+3. Navigate to the folder where the application is located and run the following command to start it:
 
 ```
   serverless deploy
 ```
 
-4. Faça requisições às rotas fornecidas seguindo o modelo e teste as respostas retornadas.
-***
-
-## 👩🏽‍💻 Desenvolvimento
-
-O projeto foi desenvolvido utilizando a linguagem Python, juntamente do framework Serverless.
-
-A API faz uso de algumas ferramentas da AWS em seu funcionamento, como o Rekognition, o Bedrock, o Cloudwatch e a Amazon Lambda.
-
-Iniciamos delegando as funções para os membros da equipe, definindo qual membro ficaria com determinada rota, após isso foram feitos alguns testes para verificar o funcionamento da aplicação.
-
-### Estrutura AWS
-
-![Estrutura de Cloud na AWS](./assets/arquitetura-base.jpg)
+4. Make requests to the provided routes following the model and test the returned responses.
 
 ***
 
-## 📁 Organização das Pastas
+## 👩🏽‍💻 Development
 
-![Estrutura de Pastas](./assets/FolderStructure.png)
+The project was developed using the Python language, along with the Serverless framework.
 
-***
+The API makes use of several AWS tools in its operation, such as Rekognition, Bedrock, Cloudwatch, and Amazon Lambda.
 
-## 🚨 Dificuldades Conhecidas
+### AWS Structure
 
-Entre as dificuldades enfrentadas pela equipe ao longo do desenvolvimento do projeto, notamos:
+![Cloud Structure on AWS](./assets/arquitetura-base.jpg)
 
-- Dificuldade inicial em delegar tarefas para cada integrante.
-- Problemas para desenvolver um prompt que possa gerar a melhor resposta possível.
 
-***
+## 📜 License
 
-## 👷🏾 Desenvolvedores
-
-- [Juhan Freitas](https://github.com/juhanfreitas)
-- [Pablo Lucas](https://github.com/Pablosxz)
-- [Ricardo Dall'Agnol](https://github.com/Richoland)
-- [Thiago Coelho](https://github.com/thiagocoelhoo)
+This project is licensed under the terms of the MIT License. See the [LICENSE](./LICENSE) file for more details.
