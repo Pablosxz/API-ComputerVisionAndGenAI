@@ -3,19 +3,20 @@ import boto3
 
 # importing functions from the utils folder
 from utils.labelFilter import labelFilter
+from utils.createdDate import createdDate
 
 def v2Vision(event, context):
     try:
-        # Informações da solicitação
+        # Request Info
         request_body = json.loads(event.get('body'))
         bucket = request_body.get('bucket')
         imageName = request_body.get('imageName')
 
-        # Inicializando o cliente do Rekognition
+        # Inicializing session and AWS Rekognition
         session = boto3.Session()
         client = session.client('rekognition')
 
-        # Detectando animais na imagem
+        # Detecting animals in the image
         response_animal = client.detect_labels(
             Image={'S3Object': {'Bucket': bucket, 'Name': imageName}},
             Features = ["GENERAL_LABELS"],
@@ -27,7 +28,7 @@ def v2Vision(event, context):
             },
         )
 
-        # Pegando a 'confidence' e 'name' das labels
+        # Getting 'confidence' and 'name' from the labels
         labels = [
             {
                 'Confidence': label['Confidence'],
@@ -39,19 +40,17 @@ def v2Vision(event, context):
         # Filtering Labels
         labels = labelFilter(labels)
 
-        # Verificar se há PET na imagem
+        # Verify if there is any label
         if len(labels) == 0: 
-            raise Exception("Não foi possível identificar pets na imagem.")
+            raise Exception("Unable to identify pets in the image.")
 
-        # Montando a URL da imagem
+        # Image URL
         url = f'https://{bucket}.s3.amazonaws.com/{imageName}'
 
-        # Pegando a data de criação da imagem
-        s3 = boto3.client('s3')
-        dados = s3.head_object(Bucket=bucket, Key=imageName)
-        created_image = dados['LastModified'].strftime("%d-%m-%Y %H:%M:%S")
+        # Getting the image creation date
+        created_image = createdDate(bucket, imageName)
 
-        # Gerando dados com AWS Bedwrock
+        # Bedrock
         bedrock_runtime = boto3.client(
             service_name='bedrock-runtime',
             region_name="us-east-1"
@@ -62,18 +61,16 @@ def v2Vision(event, context):
         prompt = f"""
 Labels: {label_names}
 
-Tarefa: Com base na lista de labels do animal informado anteriormente, detecte o parâmetro relacionado a raça deste e dê dicas sobre o nível de energia e necessidades de exercícios,
-temperamento e comportamento, cuidados e necessidades, problemas de saúde comuns desse animal. Se refira ao pet por sua
-raça e não por sua espécie. Tente usar as labels informadas.
+Task: Based on the list of labels of the animal previously informed, detect the parameter related to its breed and give tips on its energy level and exercise needs, temperament and behavior, care and needs, and common health problems of this animal. Refer to the pet by its breed and not by its species. Try to use the informed labels.
 
-Exemplo de saída: Dicas sobre a raça Labrador: 
-Nível de Energia e Necessidades de Exercícios: Labradores são de médio nível de energia, necessitando de 40 minutos de exercício por dia. 
-Temperamento e Comportamento: Inteligentes, enérgicos, dóceis, e com forte desejo de trabalhar com pessoas. 
-Cuidados e Necessidades: Pelos curtos que precisam de poucos cuidados, mas devem ser penteados uma vez por semana para remover fios mortos e soltos. A alimentação deve ser adequada, ajustando a quantidade conforme o peso do cão. 
-Problemas de Saúde Comuns: Displasia do cotovelo e coxofemoral, atrofia progressiva da retina (APR) e catarata hereditária. 
+Example output: Tips about the Labrador breed:
+Energy Level and Exercise Needs: Labradors have a medium energy level, requiring 40 minutes of exercise per day.
+Temperament and Behavior: Intelligent, energetic, docile, and with a strong desire to work with people.
+Care and Needs: Short hair that needs little care, but should be brushed once a week to remove dead and loose hair. The diet should be adequate, adjusting the amount according to the dog's weight.
+Common Health Problems: Elbow and hip dysplasia, progressive retinal atrophy (PRA), and hereditary cataracts.
         """
 
-        # Corpo da requisição ao modelo
+        # Body of the request
         bedrock_request_body = json.dumps({
             "inputText": prompt,
             "textGenerationConfig": {
@@ -84,7 +81,7 @@ Problemas de Saúde Comuns: Displasia do cotovelo e coxofemoral, atrofia progres
             }
         })
 
-        # Chamada ao modelo
+        # Calling the model
         model_response = bedrock_runtime.invoke_model(
             body=bedrock_request_body,
             modelId="amazon.titan-text-express-v1",
@@ -92,12 +89,12 @@ Problemas de Saúde Comuns: Displasia do cotovelo e coxofemoral, atrofia progres
             contentType="application/json",
         )
 
-        # Resposta do modelo
+        # Answer from the model
         response_content = json.loads(model_response.get('body').read())
         generated_text = response_content.get('results')[0].get('outputText')
         generated_text = generated_text.replace("\n", " ")
 
-        # Montando o corpo da resposta
+        # Response body
         body = {
             "url_to_image": url,
             "created_image": created_image,
