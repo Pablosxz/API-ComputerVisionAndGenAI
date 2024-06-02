@@ -1,4 +1,4 @@
-# Pet Emotion Detector and Tips Generator for Pet Owners
+# Emotion Detector and Tips Generator for Pet Owners
 
 
 ## 📃 Table of Contents
